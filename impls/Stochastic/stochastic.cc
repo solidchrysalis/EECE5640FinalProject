@@ -1,6 +1,6 @@
 #include "tensorflow/core/framework/op.h"
 #include "tensorflow/core/framework/op_kernel.h"
-#include "sgd_op.h"
+#include "stochastic.h"
 
 using namespace tensorflow;
 
@@ -10,9 +10,9 @@ REGISTER_OP("SGD")
     .Attr("lr: float")
     .Output("out: float32");
 
-class MySGDOp : public OpKernel {
+class SGDOp : public OpKernel {
 public:
-    explicit MySGDOp(OpKernelConstruction* context) : OpKernel(context) {
+    explicit SGDOp(OpKernelConstruction* context) : OpKernel(context) {
         OP_REQUIRES_OK(context, context->GetAttr("lr", &lr_));
     }
 
@@ -34,4 +34,4 @@ private:
     float lr_;
 };
 
-REGISTER_KERNEL_BUILDER(Name("SGD").Device(DEVICE_GPU), MySGDOp);
+REGISTER_KERNEL_BUILDER(Name("SGD").Device(DEVICE_GPU), SGDOp);
