@@ -1,20 +1,9 @@
-# Makefile for compiling adam.cu with selectable architecture
+EXT_NAME = adam_cuda
 
-# Source and output
-SRC = adam.cu
-OUT = libadam.so
+.PHONY: all clean
 
-# Default architecture (can be overridden on command line)
-ARCH ?= sm_70  # Default to V100
-
-# Compiler and flags
-NVCC = nvcc
-CFLAGS = -Xcompiler -fPIC -shared
-
-all: $(OUT)
-
-$(OUT): $(SRC)
-	$(NVCC) $(CFLAGS) -gencode arch=compute_$(ARCH:sm_%=%),code=$(ARCH) $(SRC) -o $(OUT)
+all:
+	python setup.py build_ext --inplace
 
 clean:
-	rm -f $(OUT)
+	rm -rf build *.so $(EXT_NAME).egg-info __pycache__
