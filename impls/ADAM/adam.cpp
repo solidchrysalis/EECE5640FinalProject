@@ -2,7 +2,7 @@
 #include <torch/extension.h>
 
 // Declare the CUDA function
-void adam_cuda(torch::Tensor weights, torch::Tensor grads, float lr, torch::Tensor prev_mom, float beta);
+void adam_cuda(torch::Tensor weights, torch::Tensor grads, torch::Tensor prev_mom, float beta, float lr);
 
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {

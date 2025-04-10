@@ -12,8 +12,32 @@ loss = [
 
 # Create the plot
 plt.plot(epochs, loss, marker='o', linestyle='-', color='b')
-plt.title('Loss vs Epochs')
+plt.title('Loss vs Epochs - SGD, CIFAR, P100')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.grid(True)
+plt.show()
+
+
+# Dummy data (replace with your actual final accuracies and kernel times)
+methods = ['SGD', 'Adam', 'Adagrad']
+final_accuracies = [0.72, 0.53, 0.80]  # Replace with real values
+average_times = [12.5, 14.2, 13.0]     # In milliseconds, replace with real values
+
+# Plotting final accuracies
+plt.figure(figsize=(10, 4))
+
+plt.subplot(1, 2, 1)
+plt.bar(methods, final_accuracies, color=['blue', 'green', 'orange'])
+plt.ylim(0, 1)
+plt.title('Final Accuracies - CIFAR, P100')
+plt.ylabel('Accuracy')
+
+# Plotting average kernel times
+plt.subplot(1, 2, 2)
+plt.bar(methods, average_times, color=['blue', 'green', 'orange'])
+plt.title('Average Kernel Execution Times - CIFAR, P100')
+plt.ylabel('Time (ms)')
+
+plt.tight_layout()
 plt.show()

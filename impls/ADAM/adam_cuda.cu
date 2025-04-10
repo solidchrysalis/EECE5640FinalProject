@@ -4,11 +4,12 @@
 
 __global__ void adam_kernel(const float* grad, float* var, const float* prev_mom, float beta, float lr, int size) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    float curr_mom = 0f;
 
     if (idx < size) {
-        curr_mom = beta * prev_mom[i] + (1 - beta) * grad[idx];
+        float curr_mom = 0.0;
+        curr_mom = beta * prev_mom[idx] + (1 - beta) * grad[idx];
         var[idx] = curr_mom * lr;
+        prev_mom[idx] = curr_mom;
     }
 }
 
@@ -18,7 +19,7 @@ void adam_cuda(torch::Tensor weights, torch::Tensor grads, torch::Tensor prev_mo
     TORCH_CHECK(grads.is_cuda(), "grads must be a CUDA tensor");
     TORCH_CHECK(weights.is_contiguous(), "weights must be contiguous");
     TORCH_CHECK(grads.is_contiguous(), "grads must be contiguous");
-    TORCH_CHECK(weights.sizes() == grads.sizes(), "weights and grads must be same size");s
+    TORCH_CHECK(weights.sizes() == grads.sizes(), "weights and grads must be same size");
 
     int n = weights.numel();
     int threads = 256;

@@ -11,6 +11,12 @@ __global__ void adagrad_kernel(float* weights, const float* grads, float* cache,
 }
 
 void adagrad_cuda(torch::Tensor weights, torch::Tensor grads, float lr) {
+    TORCH_CHECK(weights.is_cuda(), "weights must be a CUDA tensor");
+    TORCH_CHECK(grads.is_cuda(), "grads must be a CUDA tensor");
+    TORCH_CHECK(weights.is_contiguous(), "weights must be contiguous");
+    TORCH_CHECK(grads.is_contiguous(), "grads must be contiguous");
+    TORCH_CHECK(weights.sizes() == grads.sizes(), "weights and grads must be same size");
+    
     int n = weights.size(0);
     const int threads = 256;
     const int blocks = (n + threads - 1) / threads;

@@ -1,12 +1,13 @@
 import torch
 from torch.optim.optimizer import Optimizer
-import stochastic_cuda 
+import adam_cuda 
+import time
 
-class StochasticOptimizer(Optimizer):
+class AdamOptimizer(Optimizer):
     def __init__(self, params, lr=0.01):
         # Initialize the parent Optimizer class with the parameters and learning rate
         defaults = dict(lr=lr)
-        super(StochasticOptimizer, self).__init__(params, defaults)
+        super(AdamOptimizer, self).__init__(params, defaults)
 
     def step(self, closure=None):
         loss = None
@@ -25,8 +26,8 @@ class StochasticOptimizer(Optimizer):
                 var = param.data
 
                 if var.is_cuda:
-                    stochastic_cuda.stochastic(var, grad, lr)
+                    adam_cuda.adam(var, grad, 0.9, lr)
                 else:
-                    raise RuntimeError("StochasticOptimizer only supports CUDA tensors.")
+                    raise RuntimeError("AdamOptimizer only supports CUDA tensors.")
 
         return loss
