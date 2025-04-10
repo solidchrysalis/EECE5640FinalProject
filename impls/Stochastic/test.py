@@ -9,5 +9,5 @@ for i in range(100):
     w.grad = None
     loss = loss_fn(w, target)
     loss.backward()
-    stochastic_cuda.sgd_step(w.data, w.grad, lr=0.1)
+    stochastic_cuda.stochastic(w.data, w.grad, lr=0.1)
     print(f"Step {i}, Loss: {loss.item()}")
