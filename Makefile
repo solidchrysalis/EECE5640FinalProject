@@ -3,7 +3,7 @@
 
 IMPL_DIRS := $(wildcard impl/*)
 
-ARCH ?= sm_70
+ARCH ?= sm_60
 
 .PHONY: all clean $(IMPL_DIRS)
 

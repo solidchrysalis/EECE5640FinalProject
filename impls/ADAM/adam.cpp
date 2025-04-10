@@ -2,13 +2,9 @@
 #include <torch/extension.h>
 
 // Declare the CUDA function
-void adam_cuda(torch::Tensor weights, torch::Tensor grads, float lr);
+void adam_cuda(torch::Tensor weights, torch::Tensor grads, float lr, torch::Tensor prev_mom, float beta);
 
-// Python-visible function
-void adam(torch::Tensor weights, torch::Tensor grads, float lr) {
-    adam_cuda(weights, grads, lr);
-}
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
-    m.def("adam", &adam, "Custom Adam update (CUDA)");
+    m.def("adam", &adam_cuda, "Custom Adam update (CUDA)");
 }
