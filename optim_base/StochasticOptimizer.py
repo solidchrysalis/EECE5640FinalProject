@@ -30,5 +30,4 @@ class StochasticOptimizer(Optimizer):
                 else:
                     raise RuntimeError("StochasticOptimizer only supports CUDA tensors.")
 
-
         return loss

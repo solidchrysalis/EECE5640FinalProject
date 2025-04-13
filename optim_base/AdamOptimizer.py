@@ -7,6 +7,7 @@ class AdamOptimizer(Optimizer):
     def __init__(self, params, lr=0.01):
         # Initialize the parent Optimizer class with the parameters and learning rate
         defaults = dict(lr=lr)
+        self.prev_mom = torch.Tensor([])
         super(AdamOptimizer, self).__init__(params, defaults)
 
     def step(self, closure=None):
@@ -25,8 +26,11 @@ class AdamOptimizer(Optimizer):
                 grad = param.grad.data
                 var = param.data
 
+                if self.prev_mom.numel() == 0:
+                    self.prev_mom = torch.zeros(var.numel())
+
                 if var.is_cuda:
-                    adam_cuda.adam(var, grad, 0.9, lr)
+                    adam_cuda.adam(var, grad, self.prev_mom, 0.9, lr)
                 else:
                     raise RuntimeError("AdamOptimizer only supports CUDA tensors.")
 

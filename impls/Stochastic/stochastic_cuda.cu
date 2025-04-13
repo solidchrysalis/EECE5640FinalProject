@@ -2,11 +2,11 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
-__global__ void stochastic_kernel(const float* grad, float* var, float lr, int size) {
+__global__ void stochastic_kernel(float* var, const float* grads, float lr, int size) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (idx < size) {
-        var[idx] = grad[idx] * -lr;
+        var[idx] -= grad[idx] * lr;
     }
 }
 
@@ -23,8 +23,8 @@ void stochastic_cuda(torch::Tensor weights, torch::Tensor grads, float lr) {
     int blocks = (n + threads - 1) / threads;
 
     stochastic_kernel<<<blocks, threads>>>(
-        grads.data_ptr<float>(),
         weights.data_ptr<float>(),
+        grads.data_ptr<float>(),
         lr,
         n
     );

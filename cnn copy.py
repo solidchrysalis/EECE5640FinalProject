@@ -128,7 +128,7 @@ net = Net().to(device)
 
 criterion = nn.CrossEntropyLoss()
 # Custom optimizer class - TODO: Make Base Optimizer class
-optimizer = optim.Adam(net.parameters(), lr=0.005)
+optimizer = optim.Adagrad(net.parameters(), lr=0.005)
 
 for epoch in range(epochs): 
 

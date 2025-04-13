@@ -2,12 +2,12 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
-__global__ void adam_kernel(const float* grad, float* var, const float* prev_mom, float beta, float lr, int size) {
+__global__ void adam_kernel(float* var, const float* grad, const float* prev_mom, float beta, float lr, int size) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (idx < size) {
         float curr_mom = 0.0;
-        curr_mom = beta * prev_mom[idx] + (1 - beta) * grad[idx];
+        curr_mom = (beta * prev_mom[idx]) + (1 - beta) * grad[idx];
         var[idx] = curr_mom * lr;
         prev_mom[idx] = curr_mom;
     }
@@ -26,8 +26,8 @@ void adam_cuda(torch::Tensor weights, torch::Tensor grads, torch::Tensor prev_mo
     int blocks = (n + threads - 1) / threads;
 
     adam_kernel<<<blocks, threads>>>(
-        grads.data_ptr<float>(),
         weights.data_ptr<float>(),
+        grads.data_ptr<float>(),
         prev_mom.data_ptr<float>(),
         beta,
         lr,
