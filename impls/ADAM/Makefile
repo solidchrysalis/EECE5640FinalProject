@@ -3,7 +3,7 @@ EXT_NAME = adam_cuda
 .PHONY: all clean
 
 all:
-	python setup.py bdist_wheel
+	python3 build_wrapper.py $(ARCH)
 
 clean:
 	rm -rf build *.so dist/$(EXT_NAME).whl __pycache__

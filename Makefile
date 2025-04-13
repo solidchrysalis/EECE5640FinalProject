@@ -1,18 +1,15 @@
-# High-level Makefile to build all CUDA implementations in impl/
-# Usage: make all ARCH=sm_70
+# Grab all immediate subdirs under impl/
+IMPL_SUBDIRS := $(wildcard impls/*)
 
-IMPL_DIRS := $(wildcard impl/*)
-
+# Optional architecture flag with a default
 ARCH ?= sm_60
 
-.PHONY: all clean $(IMPL_DIRS)
+.PHONY: all $(IMPL_SUBDIRS)
 
-all: $(IMPL_DIRS)
+# Main rule that builds everything
+all: $(IMPL_SUBDIRS)
 
-$(IMPL_DIRS):
+# For each impl/XYZ, run `make -C impl/XYZ ARCH=...`
+$(IMPL_SUBDIRS):
+	@echo "Building in $@ with ARCH=$(ARCH)"
 	$(MAKE) -C $@ ARCH=$(ARCH)
-
-clean:
-	for dir in $(IMPL_DIRS); do \
-		$(MAKE) -C $$dir clean; \
-	done

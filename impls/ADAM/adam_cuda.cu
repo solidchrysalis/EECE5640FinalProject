@@ -2,7 +2,7 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
-__global__ void adam_kernel(float* var, const float* grad, const float* prev_mom, float beta, float lr, int size) {
+__global__ void adam_kernel(float* var, const float* grad,  float* prev_mom, float beta, float lr, int size) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (idx < size) {

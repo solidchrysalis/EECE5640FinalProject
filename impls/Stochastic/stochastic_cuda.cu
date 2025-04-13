@@ -6,7 +6,7 @@ __global__ void stochastic_kernel(float* var, const float* grads, float lr, int 
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (idx < size) {
-        var[idx] -= grad[idx] * lr;
+        var[idx] -= grads[idx] * lr;
     }
 }
 
