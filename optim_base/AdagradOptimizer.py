@@ -4,11 +4,12 @@ import adagrad_cuda
 import time
 
 class AdagradOptimizer(Optimizer):
-    def __init__(self, params, device=None, lr=0.001):
+    def __init__(self, params, device=None, lr=0.005):
         # Initialize the parent Optimizer class with the parameters and learning rate
         defaults = dict(lr=lr)
         self.prev_grads = dict()
         self.device = device
+        self.epsilon = 1e-8
         if self.device is None:
             raise RuntimeError("No device found")
         super(AdagradOptimizer, self).__init__(params, defaults)
@@ -36,7 +37,7 @@ class AdagradOptimizer(Optimizer):
                 curr_layer_grads = self.prev_grads[param]
 
                 if var.is_cuda:
-                    adagrad_cuda.adagrad(var, grad, curr_layer_grads, lr)
+                    adagrad_cuda.adagrad(var, grad, curr_layer_grads, self.epsilon, lr)
                 else:
                     raise RuntimeError("StochasticOptimizer only supports CUDA tensors.")
 

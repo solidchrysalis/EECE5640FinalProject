@@ -4,11 +4,14 @@ import adam_cuda
 import time
 
 class AdamOptimizer(Optimizer):
-    def __init__(self, params, device=None, lr=0.01):
+    def __init__(self, params, device=None, lr=0.005):
         # Initialize the parent Optimizer class with the parameters and learning rate
         defaults = dict(lr=lr)
-        self.prev_mom = dict()
+        self.prev_mean = dict()
+        self.prev_variance = dict()
         self.device = device
+        self.epoch = 1.0
+        self.epsilon = 1e-6
         if self.device is None:
             raise RuntimeError("No device found")
         super(AdamOptimizer, self).__init__(params, defaults)
@@ -28,17 +31,24 @@ class AdamOptimizer(Optimizer):
                 # Get gradients and the parameter (weights)
                 grad = param.grad.data
                 var = param.data
-                curr_layer_mom = None
+                curr_layer_mean = None
+                curr_layer_variance = None
 
                 # Update dictionary based the parameter (the layer) so we have custom momentums for each layer
-                if param not in self.prev_mom.keys():
-                    self.prev_mom[param] = torch.zeros_like(var).to(self.device)
+                if param not in self.prev_mean.keys():
+                    self.prev_mean[param] = torch.zeros_like(var).to(self.device)
 
-                curr_layer_mom = self.prev_mom[param]
+                if param not in self.prev_variance.keys():
+                    self.prev_variance[param] = torch.zeros_like(var).to(self.device)
 
+                curr_layer_mean = self.prev_mean[param]
+                curr_layer_variance = self.prev_variance[param]
+
+                # Magic numbs are beta 1 and 2 - todo fix them
                 if var.is_cuda:
-                    adam_cuda.adam(var, grad, curr_layer_mom, 0.9, lr)
+                    adam_cuda.adam(var, grad, curr_layer_mean, curr_layer_variance, 0.9, 0.95, self.epoch, self.epsilon, lr)
                 else:
                     raise RuntimeError("AdamOptimizer only supports CUDA tensors.")
 
+        self.epoch += 1
         return loss

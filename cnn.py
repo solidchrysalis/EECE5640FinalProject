@@ -86,7 +86,7 @@ if optim_name == "stochastic":
 elif optim_name == "adam":
     optimizer = AdamOptimizer.AdamOptimizer(net.parameters(), device, lr=0.005)
 elif optim_name == "adagrad":
-    optimizer = AdagradOptimizer.AdagradOptimizer(net.parameters(), device, lr=0.005)
+    optimizer = AdagradOptimizer.AdagradOptimizer(net.parameters(), device, lr=0.01)
 else:
     print("Incorrect optimizer name")
 

@@ -3,10 +3,11 @@
 
 __global__ void adagrad_kernel(float* weights, const float* grads, float* prev_grads, float lr, float epsilon, int size) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    
 
     if (idx < size) {
         float true_learn;
-        true_learn = lr / (sqrtf(prev_grads[idx]) + epsilon);  // Update cache (squared gradients)
+        true_learn = lr / (sqrtf(prev_grads[idx] + epsilon));  // Update cache (squared gradients)
         weights[idx] -= true_learn * grads[idx];  // Update weights
         prev_grads[idx] += grads[idx] * grads[idx];
     }
