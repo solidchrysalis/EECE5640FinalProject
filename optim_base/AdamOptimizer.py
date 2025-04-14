@@ -12,6 +12,8 @@ class AdamOptimizer(Optimizer):
         self.device = device
         self.epoch = 1.0
         self.epsilon = 1e-6
+        self.beta_1 = 0.9
+        self.beta_2 = 0.9
         if self.device is None:
             raise RuntimeError("No device found")
         super(AdamOptimizer, self).__init__(params, defaults)
@@ -41,12 +43,9 @@ class AdamOptimizer(Optimizer):
                 if param not in self.prev_variance.keys():
                     self.prev_variance[param] = torch.zeros_like(var).to(self.device)
 
-                curr_layer_mean = self.prev_mean[param]
-                curr_layer_variance = self.prev_variance[param]
-
                 # Magic numbs are beta 1 and 2 - todo fix them
                 if var.is_cuda:
-                    adam_cuda.adam(var, grad, curr_layer_mean, curr_layer_variance, 0.9, 0.95, self.epoch, self.epsilon, lr)
+                    adam_cuda.adam(var, grad, curr_layer_mean, curr_layer_variance, self.beta_1, self.beta_2, self.epoch, self.epsilon, lr)
                 else:
                     raise RuntimeError("AdamOptimizer only supports CUDA tensors.")
 

@@ -1,0 +1,34 @@
+#!/bin/bash
+ 
+#SBATCH -o "p100.txt"
+#SBATCH -e "ep100.txt"
+#SBATCH --time=3:00:00
+#SBATCH --partition=courses-gpu
+#SBATCH --gres=gpu:p100:1
+
+source /home/rowan.t/miniconda3/bin/activate
+conda activate myenv
+
+# Run experiments
+echo "Running cnn.py on cifar with stochastic" >> job_log.txt
+python3 cnn.py cifar stochastic
+
+echo "Running cnn.py on cifar with adam" >> job_log.txt
+python3 cnn.py cifar adam
+
+echo "Running cnn.py on cifar with adagrad" >> job_log.txt
+python3 cnn.py cifar adagrad
+
+echo "Running cnn.py on fashionmnist with stochastic" >> job_log.txt
+python3 cnn.py fashionmnist stochastic
+
+echo "Running cnn.py on fashionmnist with adam" >> job_log.txt
+python3 cnn.py fashionmnist adam
+
+echo "Running cnn.py on fashionmnist with adagrad" >> job_log.txt
+python3 cnn.py fashionmnist adagrad
+
+
+exit 0
+
+

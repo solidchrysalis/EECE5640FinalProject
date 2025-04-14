@@ -12,9 +12,9 @@ __global__ void adam_kernel(float* var, const float* grad, float* prev_mean, flo
     if (idx < size) {
         curr_mean = (beta_1 * prev_mean[idx]) + ((1 - beta_1) * grad[idx]);
         curr_variance = (beta_2 * prev_variance[idx]) + ((1 - beta_2) * grad[idx] * grad[idx]);
-        corrected_mean = curr_mean / (1 - (powf(curr_mean, epoch)));
-        corrected_variance = curr_variance / (1 - (powf(curr_variance, epoch)));
-        var[idx] -= (corrected_mean / sqrtf(corrected_variance + epsilon)) * lr;
+        corrected_mean = curr_mean / (1 - (powf(beta_1, epoch)));
+        corrected_variance = curr_variance / (1 - (powf(beta_2, epoch)));
+        var[idx] -= ((corrected_mean / (sqrtf(corrected_variance + epsilon))) * lr);
         prev_mean[idx] = curr_mean;
         prev_variance[idx] = curr_variance;
     }

@@ -9,10 +9,11 @@ import time
 import numpy as np
 from optim_base import StochasticOptimizer, AdamOptimizer, AdagradOptimizer
 
-#dataset=sys.argv[2]
-#optimizer=sys.argv[1]
-dataset="fashionmnist"
-optim_name="adagrad"
+
+dataset=sys.argv[1]
+optim_name=sys.argv[2]
+#dataset="cifar"
+#optim_name="adagrad"
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
@@ -25,6 +26,7 @@ transform_cifar = transforms.Compose(
 
 transform_fashion_mnist = transforms.Compose([
     transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
     transforms.Lambda(lambda x: x.repeat(3, 1, 1))  # Convert 1 channel to 3 channels (RGB)
 ])
 
@@ -89,6 +91,8 @@ elif optim_name == "adagrad":
     optimizer = AdagradOptimizer.AdagradOptimizer(net.parameters(), device, lr=0.01)
 else:
     print("Incorrect optimizer name")
+
+print("running model")
 
 for epoch in range(epochs): 
 
