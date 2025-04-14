@@ -23,7 +23,11 @@ setup(
     ext_modules=[
         CUDAExtension(
             name='stochastic_cuda',
-            sources=['stochastic.cpp', 'stochastic_cuda.cu']
+            sources=['stochastic.cpp', 'stochastic_cuda.cu'],
+            extra_compile_args={
+                'cxx': ['-g', '-O0'],
+                'nvcc': ['-g', '-O0', '-lineinfo', '-D__CUDA_NO_HALF_OPERATORS__', '-DTORCH_USE_CUDA_DSA']
+            }
         )
     ],
     cmdclass={'build_ext': CustomBuildExt}

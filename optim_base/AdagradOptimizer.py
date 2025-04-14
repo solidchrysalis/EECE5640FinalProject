@@ -4,10 +4,13 @@ import adagrad_cuda
 import time
 
 class AdagradOptimizer(Optimizer):
-    def __init__(self, params, lr=0.01):
+    def __init__(self, params, device=None, lr=0.001):
         # Initialize the parent Optimizer class with the parameters and learning rate
         defaults = dict(lr=lr)
-        self.prev_grads = torch.Tensor([])
+        self.prev_grads = dict()
+        self.device = device
+        if self.device is None:
+            raise RuntimeError("No device found")
         super(AdagradOptimizer, self).__init__(params, defaults)
 
     def step(self, closure=None):
@@ -25,12 +28,15 @@ class AdagradOptimizer(Optimizer):
                 # Get gradients and the parameter (weights)
                 grad = param.grad.data
                 var = param.data
+                curr_layer_grads = None
 
-                if self.prev_grads.numel() == 0:
-                    self.prev_grads = torch.zeros(var.numel())
+                if param not in self.prev_grads.keys():
+                    self.prev_grads[param] = torch.full_like(var, 1e-6).to(self.device)
+
+                curr_layer_grads = self.prev_grads[param]
 
                 if var.is_cuda:
-                    adagrad_cuda.adagrad(var, grad, lr)
+                    adagrad_cuda.adagrad(var, grad, curr_layer_grads, lr)
                 else:
                     raise RuntimeError("StochasticOptimizer only supports CUDA tensors.")
 

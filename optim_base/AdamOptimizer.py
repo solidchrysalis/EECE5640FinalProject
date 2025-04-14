@@ -4,10 +4,13 @@ import adam_cuda
 import time
 
 class AdamOptimizer(Optimizer):
-    def __init__(self, params, lr=0.01):
+    def __init__(self, params, device=None, lr=0.01):
         # Initialize the parent Optimizer class with the parameters and learning rate
         defaults = dict(lr=lr)
-        self.prev_mom = torch.Tensor([])
+        self.prev_mom = dict()
+        self.device = device
+        if self.device is None:
+            raise RuntimeError("No device found")
         super(AdamOptimizer, self).__init__(params, defaults)
 
     def step(self, closure=None):
@@ -25,12 +28,16 @@ class AdamOptimizer(Optimizer):
                 # Get gradients and the parameter (weights)
                 grad = param.grad.data
                 var = param.data
+                curr_layer_mom = None
 
-                if self.prev_mom.numel() == 0:
-                    self.prev_mom = torch.zeros(var.numel())
+                # Update dictionary based the parameter (the layer) so we have custom momentums for each layer
+                if param not in self.prev_mom.keys():
+                    self.prev_mom[param] = torch.zeros_like(var).to(self.device)
+
+                curr_layer_mom = self.prev_mom[param]
 
                 if var.is_cuda:
-                    adam_cuda.adam(var, grad, self.prev_mom, 0.9, lr)
+                    adam_cuda.adam(var, grad, curr_layer_mom, 0.9, lr)
                 else:
                     raise RuntimeError("AdamOptimizer only supports CUDA tensors.")
 

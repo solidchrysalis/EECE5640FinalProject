@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GPU = $1
-OPTIMIZER = $2
+OPTIMIZER = $1
+DATASET = $2
 
 python3 cnn.py $1 $2

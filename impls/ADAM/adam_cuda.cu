@@ -2,13 +2,13 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
-__global__ void adam_kernel(float* var, const float* grad,  float* prev_mom, float beta, float lr, int size) {
+__global__ void adam_kernel(float* var, const float* grad, float* prev_mom, float beta, float lr, int size) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    float curr_mom = 0.0;
 
     if (idx < size) {
-        float curr_mom = 0.0;
         curr_mom = (beta * prev_mom[idx]) + (1 - beta) * grad[idx];
-        var[idx] = curr_mom * lr;
+        var[idx] -= curr_mom * lr;
         prev_mom[idx] = curr_mom;
     }
 }
