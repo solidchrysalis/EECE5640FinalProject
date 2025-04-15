@@ -5,9 +5,10 @@ __global__ void adagrad_kernel(float* var, const float* grads, float* prev_grads
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     
     if (idx < size) {
-        float denom = sqrtf(prev_grads[idx] + epsilon);  // Update cache (squared gradients)
-        var[idx] -= (lr / denom) * grads[idx];  // Update var
-        prev_grads[idx] += grads[idx] * grads[idx];
+        float grad = grads[idx];
+        prev_grads[idx] += grad * grad;  // Accumulate squared gradients
+        float denom = sqrtf(prev_grads[idx] + epsilon);
+        var[idx] -= (lr / denom) * grad;  // Update variable
     }
 }
 

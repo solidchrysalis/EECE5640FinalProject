@@ -32,7 +32,7 @@ class AdagradOptimizer(Optimizer):
                 curr_layer_grads = None
 
                 if param not in self.prev_grads.keys():
-                    self.prev_grads[param] = torch.full_like(var, 1e-6).to(self.device)
+                    self.prev_grads[param] = torch.full_like(var, 1e-12).to(self.device)
 
                 curr_layer_grads = self.prev_grads[param]
 

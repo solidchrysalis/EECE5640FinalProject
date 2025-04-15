@@ -18,7 +18,7 @@ optim_name=sys.argv[2]
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 
-epochs = 75
+epochs = 50
 
 transform_cifar = transforms.Compose(
     [transforms.ToTensor(),
@@ -26,7 +26,6 @@ transform_cifar = transforms.Compose(
 
 transform_fashion_mnist = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
     transforms.Lambda(lambda x: x.repeat(3, 1, 1))  # Convert 1 channel to 3 channels (RGB)
 ])
 
@@ -88,7 +87,7 @@ if optim_name == "stochastic":
 elif optim_name == "adam":
     optimizer = AdamOptimizer.AdamOptimizer(net.parameters(), device, lr=0.005)
 elif optim_name == "adagrad":
-    optimizer = AdagradOptimizer.AdagradOptimizer(net.parameters(), device, lr=0.01)
+    optimizer = AdagradOptimizer.AdagradOptimizer(net.parameters(), device, lr=0.005)
 else:
     print("Incorrect optimizer name")
 

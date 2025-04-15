@@ -43,6 +43,9 @@ class AdamOptimizer(Optimizer):
                 if param not in self.prev_variance.keys():
                     self.prev_variance[param] = torch.zeros_like(var).to(self.device)
 
+                curr_layer_mean = self.prev_mean[param]
+                curr_layer_variance = self.prev_variance[param]
+
                 # Magic numbs are beta 1 and 2 - todo fix them
                 if var.is_cuda:
                     adam_cuda.adam(var, grad, curr_layer_mean, curr_layer_variance, self.beta_1, self.beta_2, self.epoch, self.epsilon, lr)

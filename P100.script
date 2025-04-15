@@ -8,6 +8,7 @@
 
 source /home/rowan.t/miniconda3/bin/activate
 conda activate myenv
+module load Nsight/2024.7.1
 
 # Run experiments
 echo "Running cnn.py on cifar with stochastic" >> job_log.txt

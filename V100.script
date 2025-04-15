@@ -2,46 +2,31 @@
  
 #SBATCH -o "v100.txt"
 #SBATCH -e "ev100.txt"
-#SBATCH --time=24:00:00
+#SBATCH --time=3:00:00
 #SBATCH --partition=courses-gpu
 #SBATCH --gres=gpu:v100-sxm2:1
 
 source /home/rowan.t/miniconda3/bin/activate
 conda activate myenv
 
-make all ARCH=sm_70
-bash install.bash
-
 # Run experiments
-echo "Running cnn.py on cifar with stochastic" >> job_log.txt
-ncu --target-processes all --kernel-name "stochastic_cuda*" \
-    --export cifar_stochastic_v100 \
-    python3 cnn.py cifar stochastic
+#echo "Running cnn.py on cifar with stochastic" >> job_log_V100.txt
+#python3 cnn.py cifar stochastic
 
-echo "Running cnn.py on cifar with adam" >> job_log.txt
-ncu --target-processes all --kernel-name "adam_cuda*" \
-    --export cifar_adam_v100 \
-    python3 cnn.py cifar adam
+#echo "Running cnn.py on cifar with adam" >> job_log_V100.txt
+#python3 cnn.py cifar adam
 
-echo "Running cnn.py on cifar with adagrad" >> job_log.txt
-ncu --target-processes all --kernel-name "adagrad_cuda*" \
-    --export cifar_adagrad_v100 \
-    python3 cnn.py cifar adagrad
+#echo "Running cnn.py on cifar with adagrad" >> job_log_V100.txt
+#python3 cnn.py cifar adagrad
 
-echo "Running cnn.py on fashionmnist with stochastic" >> job_log.txt
-ncu --target-processes all --kernel-name "stochastic_cuda*" \
-    --export fashionmnist_stochastic_v100 \
-    python3 cnn.py fashionmnist stochastic
+echo "Running cnn.py on fashionmnist with stochastic" >> job_log_V100.txt
+python3 cnn.py fashionmnist stochastic
 
-echo "Running cnn.py on fashionmnist with adam" >> job_log.txt
-ncu --target-processes all --kernel-name "adam_cuda*" \
-    --export fashionmnist_adam_v100 \
-    python3 cnn.py fashionmnist adam
+echo "Running cnn.py on fashionmnist with adam" >> job_log_V100.txt
+python3 cnn.py fashionmnist adam
 
-echo "Running cnn.py on fashionmnist with adagrad" >> job_log.txt
-ncu --target-processes all --kernel-name "adagrad_cuda*" \
-    --export fashionmnist_adagrad_v100 \
-    python3 cnn.py fashionmnist adagrad
+echo "Running cnn.py on fashionmnist with adagrad" >> job_log_V100.txt
+python3 cnn.py fashionmnist adagrad
 
 exit 0
 
