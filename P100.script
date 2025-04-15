@@ -8,27 +8,27 @@
 
 source /home/rowan.t/miniconda3/bin/activate
 conda activate myenv
+module load cuda/12.3.0
 module load Nsight/2024.7.1
 
 # Run experiments
-echo "Running cnn.py on cifar with stochastic" >> job_log.txt
-python3 cnn.py cifar stochastic
+echo "Running cnn.py on cifar with stochastic nsys" >> job_log_P100.txt
+nsys profile -o v100_cifar_sto python3 cnn.py cifar stochastic
 
-echo "Running cnn.py on cifar with adam" >> job_log.txt
-python3 cnn.py cifar adam
+echo "Running cnn.py on cifar with adam nsys" >> job_log_P100.txt
+nsys profile -o v100_cifar_adam python3 cnn.py cifar adam
 
-echo "Running cnn.py on cifar with adagrad" >> job_log.txt
-python3 cnn.py cifar adagrad
+echo "Running cnn.py on cifar with adagrad nsys" >> job_log_P100.txt
+nsys profile -o v100_cifar_ada python3 cnn.py cifar adagrad
 
-echo "Running cnn.py on fashionmnist with stochastic" >> job_log.txt
-python3 cnn.py fashionmnist stochastic
+echo "Running cnn.py on fashionmnist with stochastic nsys" >> job_log_P100.txt
+nsys profile -o v100_fasion_sto python3 cnn.py fashionmnist stochastic
 
-echo "Running cnn.py on fashionmnist with adam" >> job_log.txt
-python3 cnn.py fashionmnist adam
+echo "Running cnn.py on fashionmnist with adam nsys" >> job_log_P100.txt
+nsys profile -o v100_fasion_adam python3 cnn.py fashionmnist adam
 
-echo "Running cnn.py on fashionmnist with adagrad" >> job_log.txt
-python3 cnn.py fashionmnist adagrad
-
+echo "Running cnn.py on fashionmnist with adagrad nsys" >> job_log_P100.txt
+nsys profile -o v100_fasion_ada python3 cnn.py fashionmnist adagrad
 
 exit 0
 
